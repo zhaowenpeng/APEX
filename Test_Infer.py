@@ -1174,15 +1174,6 @@ def apply_morphology(image, operation='dilation', kernel_size=2, foreground_valu
     
     return np.where(result > 0, foreground_value, 0).astype(image.dtype)
 
-def windows_to_wsl_path(windows_path):
-    if not windows_path:
-        return ""
-    path = windows_path.replace('\\', '/')
-    if len(path) > 1 and path[1] == ':':
-        drive = path[0].lower()
-        path = f"/mnt/{drive}{path[2:]}"
-    return path
-
 def parse_args():
     import argparse
     
@@ -1200,7 +1191,7 @@ def parse_args():
     parser.add_argument('--background-value', type=int, default=0,
                         help='Value for background pixels in binary classification output (default: 0)')
     parser.add_argument('--enable-tta', type=lambda x: str(x).lower() == 'true', 
-                        default=False,
+                        default=True,
                         help='Enable test-time augmentation with 8 transformations (default: True)')
     parser.add_argument('--enable-morphology', type=lambda x: str(x).lower() == 'true',
                         default=False,
@@ -1213,7 +1204,7 @@ def parse_args():
     parser.add_argument('--dilation-size', type=int, default=3,
                         help='Size of dilation kernel (default: 2 pixels)')
     parser.add_argument('--enable-douglas-peucker', type=lambda x: str(x).lower() == 'true', 
-                        default=False,
+                        default=True,
                         help='Apply Douglas-Peucker algorithm for polygon simplification')
     parser.add_argument('--douglas-peucker-tolerance', type=float, default=1.2,
                         help='Tolerance value for Douglas-Peucker simplification')
@@ -1252,7 +1243,7 @@ def parse_args():
                         choices=['spline', 'linear', 'quadratic', 'cubic', 'gaussian'],
                         help='Weight window function for edge blending (default: spline)')
     parser.add_argument('--enable-weighted-window', type=lambda x: str(x).lower() == 'true', 
-                        default=True,
+                        default=False,
                         help='Enable weighted window for smooth blending (default: True)')
     parser.add_argument('--huge-image-infer', type=lambda x: str(x).lower() == 'true',
                         default=False,

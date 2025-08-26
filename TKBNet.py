@@ -460,8 +460,8 @@ class KANEnhancedSemanticDecoder(nn.Module):
         out_chan = 64
         
 
-        self.semantic_refine_16 = SemanticAwareRefinement(1024, out_chan)  # 处理x3特征
-        self.semantic_refine_32 = SemanticAwareRefinement(2048, out_chan)  # 处理x4特征
+        self.semantic_refine_16 = SemanticAwareRefinement(1024, out_chan)  
+        self.semantic_refine_32 = SemanticAwareRefinement(2048, out_chan)  
         
 
         self.conv_head = nn.Sequential(

@@ -21,6 +21,7 @@ APEX (Annotation-free Parcel EXtraction) is designed to extract agricultural fie
 
 ## Workflow
 
+![](image/Flowchart.jpg)
 
 ## Installation
 
@@ -35,7 +36,7 @@ cd AECE
 The framework has been tested on the following datasets:
 
 - [AI4Boundaries](http://data.europa.eu/89h/0e79ce5d-e4c8-4721-8773-59a4acf2c9c9) - European agricultural parcel dataset
-- [FGFD](https://pan.baidu.com/s/1kdGAowJ2Dcqyn-dUQWLHJA?pwd=FGFD) - Fine-Grained Field Dataset
+- [FGFD](https://pan.baidu.com/s/1kdGAowJ2Dcqyn-dUQWLHJA?pwd=FGFD) - Fine-grained farmland dataset
 
 ## Usage
 
