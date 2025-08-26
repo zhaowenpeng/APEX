@@ -8,6 +8,12 @@
 
 ![1755801849297](image/README/1755801849297.jpg)
 
+## Dateset
+
+- (AI4Boundaries)[http://data.europa.eu/89h/0e79ce5d-e4c8-4721-8773-59a4acf2c9c9]
+
+- (FGFD)[https://pan.baidu.com/s/1kdGAowJ2Dcqyn-dUQWLHJA?pwd=FGFD]
+
 ## Run
 
 ### Train_WeakSupervise
@@ -42,5 +48,5 @@ python Train_FullSupervise.py \
     --learning-rate 1e-4 \
     --max-epochs 100 \
     --monitor-metric "val_iou" \
-    --mixed-precision true
+    --mixed-precision false
 ```
