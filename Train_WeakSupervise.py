@@ -391,17 +391,17 @@ class Trainer:
 def parse_args():
     parser = argparse.ArgumentParser(description='Semantic segmentation model training with Zhao method')
     
-    parser.add_argument('--train-image-folder', type=str, default='D:\\Zhao\\E_Dataset\\G_AblationWeaklyFrame\\BASELINE_DNR_MSF\\C_Dataset\\train\\image',
+    parser.add_argument('--train-image-folder', type=str, default='',
                         help='Training images folder path')
-    parser.add_argument('--train-label-folder', type=str, default='D:\\Zhao\\E_Dataset\\G_AblationWeaklyFrame\\BASELINE_DNR_MSF\\C_Dataset\\train\\label',
+    parser.add_argument('--train-label-folder', type=str, default='',
                         help='Training labels folder path')
-    parser.add_argument('--valid-image-folder', type=str, default='D:\\Zhao\\E_Dataset\\OursSuperviseDataset\\test\\image',
+    parser.add_argument('--valid-image-folder', type=str, default='',
                         help='Validation images folder path')
-    parser.add_argument('--valid-label-folder', type=str, default='D:\\Zhao\\E_Dataset\\OursSuperviseDataset\\test\\label',
+    parser.add_argument('--valid-label-folder', type=str, default='',
                         help='Validation labels folder path')
-    parser.add_argument('--meanstd-images-folder', type=str, default='D:/Zhao/E_Dataset/mean_std',
+    parser.add_argument('--meanstd-images-folder', type=str, default='',
                         help='Folder path for images used to calculate mean and standard deviation')
-    parser.add_argument('--save-dir', type=str, default='D:/Zhao/F_Result/LabelCorrection/test',
+    parser.add_argument('--save-dir', type=str, default='',
                         help='Base directory to save all outputs (logs, results, checkpoints)')
                         
     parser.add_argument('--label-correction-method', type=str, default='zhao',
@@ -428,7 +428,7 @@ def parse_args():
     parser.add_argument('--monitor-metric', type=str, default='val_iou',
                         choices=['val_loss', 'val_acc', 'val_iou', 'val_f1', 'train_loss'],
                         help='Performance metric to monitor')
-    parser.add_argument('--patience', type=int, default=70,
+    parser.add_argument('--patience', type=int, default=10,
                         help='Patience value for early stopping')
                         
     parser.add_argument('--mixed-precision', type=lambda x: str(x).lower() == 'true', 
