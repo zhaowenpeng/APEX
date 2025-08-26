@@ -1,52 +1,100 @@
-# AECE: An Annotation-Free Framework for Large-Scale Agricultural Parcel Extraction via Foundation Models and Adaptive Noise Correction from VHR Imagery
+# APEX: An Annotation-Free Framework for Large-Scale Agricultural Parcel Extraction via Foundation Models and Adaptive Noise Correction from VHR Imagery
 
-## Study Area
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-![1755801782916](image/README/1755801782916.jpg)
+APEX is a framework for agricultural parcel extraction that leverages foundation models and adaptive noise correction, enabling accurate field boundary detection without manual annotations.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Workflow](#workflow)
+- [Installation](#installation)
+- [Datasets](#datasets)
+- [Usage](#usage)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+
+## Overview
+
+APEX (Annotation-free Parcel EXtraction) is designed to extract agricultural field boundaries from very high-resolution (VHR) satellite imagery without requiring manual annotations. This repository contains the implementation of our framework that leverages foundation models and adaptive noise correction techniques.
 
 ## Workflow
 
-![1755801849297](image/README/1755801849297.jpg)
+![Workflow Diagram](image/README/1755801849297.jpg)
 
-## Dateset
-
-- (AI4Boundaries)[http://data.europa.eu/89h/0e79ce5d-e4c8-4721-8773-59a4acf2c9c9]
-
-- (FGFD)[https://pan.baidu.com/s/1kdGAowJ2Dcqyn-dUQWLHJA?pwd=FGFD]
-
-## Run
-
-### Train_WeakSupervise
+## Installation
 
 ```bash
-python Train_WeakSupervise.py \
-    --train-image-folder "" \
-    --train-label-folder "" \
-    --valid-image-folder "" \
-    --valid-label-folder "" \
-    --save-dir "" \
-    --batch-size 4 \
-    --learning-rate 1e-4 \
-    --max-epochs 100 \
-    --warmup-epochs 5 \
-    --correct-epochs 10 \
-    --monitor-metric "val_iou" \
+# Clone the repository
+git clone https://github.com/zhaowenpeng/AECE.git
+cd AECE
+```
+
+## Datasets
+
+The framework has been tested on the following datasets:
+
+- [AI4Boundaries](http://data.europa.eu/89h/0e79ce5d-e4c8-4721-8773-59a4acf2c9c9) - European agricultural parcel dataset
+- [FGFD](https://pan.baidu.com/s/1kdGAowJ2Dcqyn-dUQWLHJA?pwd=FGFD) - Fine-Grained Field Dataset
+
+## Usage
+
+### APEX Training
+
+```bash
+python Train_WeakSupervise.py 
+    --train-image-folder "/path/to/train/images" 
+    --train-label-folder "/path/to/train/labels" 
+    --valid-image-folder "/path/to/valid/images" 
+    --valid-label-folder "/path/to/valid/labels" 
+    --save-dir "/path/to/save/model" 
+    --batch-size 4 
+    --learning-rate 1e-4 
+    --max-epochs 100 
+    --warmup-epochs 5 
+    --correct-epochs 10 
+    --monitor-metric "val_iou" 
     --mixed-precision false
 ```
 
-### Train_FullSupervise
+### Fully-Supervised Training
 
 ```bash
-python Train_FullSupervise.py \
-    --train-image-folder "" \
-    --train-label-folder "" \
-    --valid-image-folder "" \
-    --valid-label-folder "" \
-    --save-dir "" \
-    --model "ablation" \
-    --batch-size 4 \
-    --learning-rate 1e-4 \
-    --max-epochs 100 \
-    --monitor-metric "val_iou" \
+python Train_FullSupervise.py 
+    --train-image-folder "/path/to/train/images" 
+    --train-label-folder "/path/to/train/labels" 
+    --valid-image-folder "/path/to/valid/images" 
+    --valid-label-folder "/path/to/valid/labels" 
+    --save-dir "/path/to/save/model" 
+    --model "ablation" 
+    --batch-size 4 
+    --learning-rate 1e-4 
+    --max-epochs 100 
+    --monitor-metric "val_iou" 
     --mixed-precision false
 ```
+
+### Inference
+
+```bash
+python Test_Infer.py 
+    --image-folder "/path/to/test/images" 
+    --model-path "/path/to/model" 
+    --output-dir "/path/to/output" 
+    --batch-size 1
+```
+
+## Acknowledgements
+
+This project builds upon several excellent open-source projects:
+
+- [Segment Anything 2](https://github.com/facebookresearch/sam2) - For SAM2
+- [PyTorch](https://github.com/pytorch/pytorch) - For the deep learning framework
+- [GR-KAN](https://github.com/Adamdad/kat) - For Group-KAN
+- [TabPFN](https://github.com/PriorLabs/TabPFN) - For TabPFN
+- [DBBANet](https://github.com/Henryjiepanli/DBBANet) - For model comparison
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
