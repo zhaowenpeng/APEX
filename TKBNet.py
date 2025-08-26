@@ -433,11 +433,6 @@ class EnhancedClassificationHead(nn.Module):
         return self.head(x)
 
 class SemanticAwareRefinement(nn.Module):
-    """
-    语义感知细化模块 (原TextureAwareRefinement/AttentionRefinementModule)
-    - 专门针对语义特征的注意力细化
-    - 增强语义模式的表达能力
-    """
     def __init__(self, in_chan, out_chan):
         super(SemanticAwareRefinement, self).__init__()
 

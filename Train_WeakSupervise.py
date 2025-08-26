@@ -399,14 +399,8 @@ def parse_args():
                         help='Validation images folder path')
     parser.add_argument('--valid-label-folder', type=str, default='',
                         help='Validation labels folder path')
-    parser.add_argument('--meanstd-images-folder', type=str, default='',
-                        help='Folder path for images used to calculate mean and standard deviation')
     parser.add_argument('--save-dir', type=str, default='',
                         help='Base directory to save all outputs (logs, results, checkpoints)')
-                        
-    parser.add_argument('--label-correction-method', type=str, default='zhao',
-                        choices=['zhao'],)
-    
     parser.add_argument('--warmup-epochs', type=int, default=5)
     parser.add_argument('--correct-epochs', type=int, default=10)
     
@@ -426,7 +420,6 @@ def parse_args():
                         help='Checkpoint save directory')
                         
     parser.add_argument('--monitor-metric', type=str, default='val_iou',
-                        choices=['val_loss', 'val_acc', 'val_iou', 'val_f1', 'train_loss'],
                         help='Performance metric to monitor')
     parser.add_argument('--patience', type=int, default=10,
                         help='Patience value for early stopping')

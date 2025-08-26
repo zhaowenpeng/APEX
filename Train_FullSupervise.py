@@ -216,67 +216,6 @@ class Trainer:
         return (train_loss, train_acc, train_F1score, train_F1score_Back, train_IoU,train_IoU_Back,
                 train_Precision, train_Recall, train_Kappa)
 
-    def train_one_epoch_abcnet(self, epoch):
-        self.model.train()
-        self.metric.reset()
-        train_loss = 0.0
-        tbar = tqdm(self.train_loader, desc=f"Epoch {epoch+1}/{self.args.max_epochs} [Train]")
-        
-        for iteration_train, (images, labels) in enumerate(tbar):
-            images = images.to(self.device, non_blocking=True)
-            labels = labels.to(self.device, non_blocking=True)
-            labels = labels.float()
-
-            self.optimizer.zero_grad()
-            
-            with autocast(device_type=self.device.type, enabled=self.use_amp):
-                outputs = self.model(images)
-                loss = self.criterion(outputs[0], labels) + self.criterion(outputs[1], labels) + self.criterion(outputs[2], labels)
-
-            if self.use_amp:
-                self.scaler.scale(loss).backward()
-                self.scaler.step(self.optimizer)
-                self.scaler.update()
-            else:
-                loss.backward()
-                self.optimizer.step()
-            
-            train_loss += loss.item()
-            tbar.set_description(f"Epoch {epoch+1}/{self.args.max_epochs} [Train] Loss: {train_loss / (iteration_train + 1):.5f}")
-            
-            with torch.no_grad():
-                preds = (torch.sigmoid(outputs[0]) > 0.5).long()
-                self.metric.add_batch(labels, preds)
-
-        train_loss = train_loss / len(self.train_loader)
-        train_acc = self.metric.Overall_Accuracy()
-        train_F1score = self.metric.F1Score(class_index=1)
-        train_F1score_Back = self.metric.F1Score(class_index=0)
-        train_IoU = self.metric.Intersection_over_Union(class_index=1)
-        train_IoU_Back = self.metric.Intersection_over_Union(class_index=0)
-        train_Precision = self.metric.Precision()
-        train_Recall = self.metric.Recall()
-        train_Kappa = self.metric.Kappa()
-        
-        metrics = {
-            'loss': train_loss,
-            'acc': train_acc,
-            'f1_score': train_F1score,
-            'f1_score_Back': train_F1score_Back,
-            'iou': train_IoU,
-            'iou_Back': train_IoU_Back,
-            'precision': train_Precision,
-            'recall': train_Recall,
-            'kappa': train_Kappa
-        }
-        self.logger.log_metrics(metrics, epoch, prefix='train')
-        
-        current_lr = self.optimizer.param_groups[0]['lr']
-        self.logger.log_learning_rate(current_lr, epoch)        
-        
-        return (train_loss, train_acc, train_F1score, train_F1score_Back, train_IoU,train_IoU_Back,
-                train_Precision, train_Recall, train_Kappa)
-
     def train_one_epoch_reaunet(self, epoch):
 
         self.model.train()
@@ -518,53 +457,6 @@ class Trainer:
         return (valid_loss, valid_acc, valid_F1score, valid_F1score_Back, valid_IoU, valid_IoU_Back,
                 valid_Precision, valid_Recall, valid_Kappa)
 
-    def valid_one_epoch_abcnet(self, epoch):
-        self.model.eval()
-        self.metric.reset()
-        valid_loss = 0.0
-        tbar = tqdm(self.valid_loader, desc=f"Epoch {epoch+1}/{self.args.max_epochs} [Valid]")
-
-        for iteration_valid, (images, labels) in enumerate(tbar):
-            images = images.to(self.device, non_blocking=True)
-            labels = labels.to(self.device, non_blocking=True)
-            labels = labels.float()
-
-            with torch.no_grad():
-                with torch.autocast(device_type=self.device.type, enabled=self.use_amp):
-                    outputs = self.model(images)
-                    loss = self.criterion(outputs[0], labels)
-                    preds = (torch.sigmoid(outputs[0]) > 0.5).long()
-
-            valid_loss += loss.item()
-            tbar.set_description(f"Epoch {epoch+1}/{self.args.max_epochs} [Valid] Loss: {valid_loss / (iteration_valid + 1):.5f}")
-
-            self.metric.add_batch(labels, preds)
-
-        valid_loss = valid_loss / len(self.valid_loader)
-        valid_acc = self.metric.Overall_Accuracy()
-        valid_F1score = self.metric.F1Score(class_index=1)
-        valid_F1score_Back = self.metric.F1Score(class_index=0)
-        valid_IoU = self.metric.Intersection_over_Union(class_index=1)
-        valid_IoU_Back = self.metric.Intersection_over_Union(class_index=0)
-        valid_Precision = self.metric.Precision()
-        valid_Recall = self.metric.Recall()
-        valid_Kappa = self.metric.Kappa()
-
-        metrics = {
-            'loss': valid_loss,
-            'acc': valid_acc,
-            'f1_score': valid_F1score,
-            'f1_score_Back': valid_F1score_Back,
-            'iou': valid_IoU, 
-            'iou_Back': valid_IoU_Back,
-            'precision': valid_Precision,
-            'recall': valid_Recall,
-            'kappa': valid_Kappa
-        }
-        self.logger.log_metrics(metrics, epoch, prefix='val')
-                   
-        return (valid_loss, valid_acc, valid_F1score, valid_F1score_Back, valid_IoU, valid_IoU_Back,
-                valid_Precision, valid_Recall, valid_Kappa)
 
     def valid_one_epoch_unetformer(self, epoch):
         self.model.eval()
@@ -683,10 +575,6 @@ class Trainer:
             print("Using specialized training functions for REAUNet model")
             train_epoch_fn = self.train_one_epoch_reaunet
             valid_epoch_fn = self.valid_one_epoch_reaunet
-        elif 'abcnet' in self.args.model.lower():
-            print("Using specialized training functions for ABCNet model")
-            train_epoch_fn = self.train_one_epoch_abcnet
-            valid_epoch_fn = self.valid_one_epoch_abcnet
         else:
             train_epoch_fn = self.train_one_epoch
             valid_epoch_fn = self.valid_one_epoch
@@ -718,13 +606,8 @@ class Trainer:
             else:
                 metric_to_monitor = valid_loss    
                 
-            if self.lr_scheduler is not None:
-                if isinstance(self.lr_scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-                    self.lr_scheduler.step(metric_to_monitor)
-                elif hasattr(self.lr_scheduler, '__class__') and self.lr_scheduler.__class__.__module__ == 'timm.scheduler.cosine_lr':
-                    self.lr_scheduler.step(epoch)
-                else:
-                    self.lr_scheduler.step()
+
+            self.lr_scheduler.step()
     
             epoch_time = time.time() - epoch_start_time
             minutes, seconds = divmod(epoch_time, 60)
@@ -779,21 +662,18 @@ class Trainer:
 def parse_args():
     parser = argparse.ArgumentParser(description='Semantic segmentation model training')
     
-    parser.add_argument('--train-image-folder', type=str, default =r'D:\Zhao\E_Dataset\OursSuperviseDataset\train\image',
+    parser.add_argument('--train-image-folder', type=str, default ='',
                         help='Training images folder path')
-    parser.add_argument('--train-label-folder', type=str, default =r'D:\Zhao\E_Dataset\OursSuperviseDataset\train\label',
+    parser.add_argument('--train-label-folder', type=str, default ='',
                         help='Training labels folder path')
-    parser.add_argument('--valid-image-folder', type=str, default =r'D:\Zhao\E_Dataset\OursSuperviseDataset\val\image',
+    parser.add_argument('--valid-image-folder', type=str, default ='',
                         help='Validation images folder path')
-    parser.add_argument('--valid-label-folder', type=str, default =r'D:\Zhao\E_Dataset\OursSuperviseDataset\val\label',
+    parser.add_argument('--valid-label-folder', type=str, default ='',
                         help='Validation labels folder path')
-    parser.add_argument('--meanstd-images-folder', type=str, default =r'D:\Zhao\E_Dataset\OursSuperviseDataset\mean_std',
-                        help='Folder path for images used to calculate mean and standard deviation')
-    parser.add_argument('--save-dir', type=str, default = r'D:\Zhao\F_Result\OursSupervise\ablation\BASE_MSFB_HEGB_KESB_ATF_NOKAN',
+    parser.add_argument('--save-dir', type=str, default = '',
                         help='Base directory to save all outputs (logs, results, checkpoints)')
     
     parser.add_argument('--model', type=str, default='ablation',
-                        choices=['deeplabv3plus', 'unet', 'dbbanet', 'tbkan', 'reaunet','mccanet', 'cmtfnet', 'unetformer', 'hrnet', 'ukan', 'segformer','ablation'],
                         help='Model type')
                         
     parser.add_argument('--batch-size', type=int, default=4,
@@ -819,7 +699,6 @@ def parse_args():
                         help='Whether to fine-tune')
                         
     parser.add_argument('--monitor-metric', type=str, default='val_iou',
-                        choices=['val_loss', 'val_acc', 'val_iou', 'val_f1', 'train_loss'],
                         help='Performance metric to monitor')
     parser.add_argument('--patience', type=int, default=10,
                         help='Patience value for early stopping')

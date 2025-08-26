@@ -1189,7 +1189,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Model testing and inference with advanced edge blending")
     parser.add_argument('--mode', type=str, default='inference', choices=['test', 'inference'],
                         help='Operation mode: test or inference')
-    parser.add_argument('--checkpoint-path', type=str, default= windows_to_wsl_path(r"D:\CropLand_Experiment\F_VSSemanticeSegment\Ours\tbkan_9130\Weight\best_model_checkpoint.pth"),
+    parser.add_argument('--checkpoint-path', type=str, default= '',
                         help='Path to model checkpoint')
     parser.add_argument('--batch-size', type=int, default=2,
                         help='Batch size for testing')
@@ -1233,16 +1233,16 @@ def parse_args():
     parser.add_argument('--nodata', type=int, default=None,
                         help='No data value in input images')
                         
-    parser.add_argument('--test-image-folder', type=str,default='/mnt/d/CropLand_Experiment/E_Dataset/OursSuperviseDataset/val/image',
+    parser.add_argument('--test-image-folder', type=str,default='',
                         help='Folder containing test images')
-    parser.add_argument('--test-label-folder', type=str, default='/mnt/d/CropLand_Experiment/E_Dataset/OursSuperviseDataset/val/label',
+    parser.add_argument('--test-label-folder', type=str, default='',
                         help='Folder containing test labels')
-    parser.add_argument('--test-result', type=str, default=windows_to_wsl_path(r"D:\CropLand_Experiment\G_AblationSemanticeSegment\Ours\BASE_MSFB_HEGB_KESB\Val_Result"),
+    parser.add_argument('--test-result', type=str, default='',
                         help='Folder to save test results')
                         
-    parser.add_argument('--infer-image-folder', type=str, default= windows_to_wsl_path(r"C:\Users\kyrie\Desktop\model_test\test"),
+    parser.add_argument('--infer-image-folder', type=str, default= '',
                         help='Folder containing images for inference')
-    parser.add_argument('--infer-result-folder', type=str, default= windows_to_wsl_path(r"C:\Users\kyrie\Desktop\model_test\test\a"),
+    parser.add_argument('--infer-result-folder', type=str, default= '',
                         help='Folder to save inference results')
     parser.add_argument('--clip-size', type=int, default=512,
                         help='Size of image chunks for processing')
