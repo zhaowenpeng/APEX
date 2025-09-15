@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-APEX is a framework for agricultural parcel extraction that leverages foundation models and adaptive noise correction, enabling accurate field boundary detection without manual annotations.
+The full version of the code will be presented upon the article's acceptance. APEX is a framework for agricultural parcel extraction that leverages foundation models and adaptive noise correction, enabling accurate field boundary detection without manual annotations.
 
 ## Table of Contents
 

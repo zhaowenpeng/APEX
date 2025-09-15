@@ -10,7 +10,6 @@ import math
 from ikan import ChebyKANLinear, GroupKANLinear
 from timm.layers import DropPath, trunc_normal_
 
-
 class TKBNet(nn.Module):
 
     def __init__(self, num_classes=2):
