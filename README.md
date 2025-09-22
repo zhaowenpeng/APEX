@@ -21,7 +21,7 @@ APEX (Annotation-free Parcel EXtraction) is designed to extract agricultural fie
 
 ## Workflow
 
-![](image/Flowchart.jpg)
+![1758536701904](image/README/1758536701904.jpg)
 
 ## Installation
 
